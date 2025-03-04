@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ToastAndroid, PermissionsAndroid, Platform, Image } from 'react-native';
+import { View, Text, StyleSheet, ToastAndroid, PermissionsAndroid, Platform, Image, ScrollView } from 'react-native';
 import { Button, Card } from 'react-native-paper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import textRecognition from '@react-native-ml-kit/text-recognition';
@@ -44,8 +44,6 @@ const App = () => {
 
                 if (result?.path) {
                     setImage(result.path);
-
-                    // Perform text recognition
                     const recognitionResult = await textRecognition.recognize(result.path);
                     setText(recognitionResult.text || 'No text detected');
                 }
@@ -58,8 +56,6 @@ const App = () => {
 
                 if (result?.path) {
                     setImage(result.path);
-
-                    // Perform text recognition
                     const recognitionResult = await textRecognition.recognize(result.path);
                     setText(recognitionResult.text || 'No text detected');
                 }
@@ -85,31 +81,34 @@ const App = () => {
                 <Text style={styles.appName}>Energy Meter OCR</Text>
             </View>
 
-            <View style={styles.content}>
-                <Text style={styles.title}>Extract Text from Images</Text>
+            {/* Add ScrollView for scroll functionality */}
+            <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+                <View style={styles.content}>
+                    <Text style={styles.title}>Extract Text from Images</Text>
 
-                <View style={styles.buttonContainer}>
-                    <Button mode="contained" onPress={() => handleImage(false)} style={styles.button}>
-                        Select from Gallery
-                    </Button>
-                    <Button mode="contained" onPress={() => handleImage(true)} style={styles.button}>
-                        Open Camera
-                    </Button>
+                    <View style={styles.buttonContainer}>
+                        <Button mode="contained" onPress={() => handleImage(false)} style={styles.button}>
+                            Select from Gallery
+                        </Button>
+                        <Button mode="contained" onPress={() => handleImage(true)} style={styles.button}>
+                            Open Camera
+                        </Button>
+                    </View>
+
+                    {image && (
+                        <Card style={styles.card}>
+                            <Image source={{ uri: image }} style={styles.image} />
+                            <Card.Content>
+                                <Text style={styles.textTitle}>Recognized Text:</Text>
+                                <Text style={styles.text}>{text}</Text>
+                                <Button mode="contained" onPress={copyToClipboard} style={styles.copyButton}>
+                                    Copy to Clipboard
+                                </Button>
+                            </Card.Content>
+                        </Card>
+                    )}
                 </View>
-
-                {image && (
-                    <Card style={styles.card}>
-                        <Image source={{ uri: image }} style={styles.image} />
-                        <Card.Content>
-                            <Text style={styles.textTitle}>Recognized Text:</Text>
-                            <Text style={styles.text}>{text}</Text>
-                            <Button mode="contained" onPress={copyToClipboard} style={styles.copyButton}>
-                                Copy to Clipboard
-                            </Button>
-                        </Card.Content>
-                    </Card>
-                )}
-            </View>
+            </ScrollView>
         </LinearGradient>
     );
 };
@@ -117,6 +116,12 @@ const App = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 50, // Avoid cutting off content at the bottom
     },
     header: {
         paddingVertical: 15,
@@ -132,8 +137,7 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     content: {
-        flex: 1,
-        justifyContent: 'center',
+        width: '100%',
         alignItems: 'center',
         padding: 20,
     },
@@ -171,6 +175,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 2, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 4,
+        marginBottom: 20,
     },
     image: {
         width: '100%',
