@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ToastAndroid, PermissionsAndroid, Platform } from 'react-native';
+import { View, Text, StyleSheet, ToastAndroid, PermissionsAndroid, Platform, Image } from 'react-native';
 import { Button, Card } from 'react-native-paper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import textRecognition from '@react-native-ml-kit/text-recognition';
 import ImagePicker from 'react-native-image-crop-picker';
+import LinearGradient from 'react-native-linear-gradient';
 
 const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -79,74 +80,118 @@ const App = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.buttonContainer}>
-                <Button mode="contained" onPress={() => handleImage(false)} style={styles.button}>
-                    Select from Gallery
-                </Button>
-                <Button mode="contained" onPress={() => handleImage(true)} style={styles.button}>
-                    Open Camera
-                </Button>
+        <LinearGradient colors={['#fbc2eb', '#a6c1ee']} style={styles.container}>
+            <View style={styles.header}>
+                <Text style={styles.appName}>Energy Meter OCR</Text>
             </View>
 
-            {image && (
-                <Card style={styles.card}>
-                    <Card.Cover source={{ uri: image }} style={styles.image} />
-                    <Card.Content>
-                        <Text style={styles.textTitle}>Recognized Text:</Text>
-                        <Text style={styles.text}>{text}</Text>
-                        <Button mode="contained" onPress={copyToClipboard} style={styles.copyButton}>
-                            Copy to Clipboard
-                        </Button>
-                    </Card.Content>
-                </Card>
-            )}
-        </View>
+            <View style={styles.content}>
+                <Text style={styles.title}>Extract Text from Images</Text>
+
+                <View style={styles.buttonContainer}>
+                    <Button mode="contained" onPress={() => handleImage(false)} style={styles.button}>
+                        Select from Gallery
+                    </Button>
+                    <Button mode="contained" onPress={() => handleImage(true)} style={styles.button}>
+                        Open Camera
+                    </Button>
+                </View>
+
+                {image && (
+                    <Card style={styles.card}>
+                        <Image source={{ uri: image }} style={styles.image} />
+                        <Card.Content>
+                            <Text style={styles.textTitle}>Recognized Text:</Text>
+                            <Text style={styles.text}>{text}</Text>
+                            <Button mode="contained" onPress={copyToClipboard} style={styles.copyButton}>
+                                Copy to Clipboard
+                            </Button>
+                        </Card.Content>
+                    </Card>
+                )}
+            </View>
+        </LinearGradient>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    header: {
+        paddingVertical: 15,
+        backgroundColor: '#ffdde1',
+        alignItems: 'center',
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+        elevation: 5,
+    },
+    appName: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    content: {
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
-        backgroundColor: '#f5f5f5',
+    },
+    title: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#555',
+        marginBottom: 20,
+        textAlign: 'center',
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 20,
+        width: '100%',
     },
     button: {
+        flex: 1,
         marginHorizontal: 10,
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#f799dd',
+        borderRadius: 15,
+        shadowColor: '#000',
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        elevation: 5,
     },
     card: {
         width: '90%',
-        borderRadius: 10,
+        borderRadius: 0,
         elevation: 4,
-        padding: 10,
+        padding: 15,
         backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
     },
     image: {
         width: '100%',
-        height: 200,
-        borderRadius: 8,
+        height: 250,
+        borderRadius: 0,
     },
     textTitle: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
         marginTop: 10,
+        color: '#333',
     },
     text: {
         fontSize: 14,
         marginTop: 5,
-        color: '#333',
+        color: '#666',
     },
     copyButton: {
         marginTop: 10,
-        backgroundColor: '#2196F3',
+        backgroundColor: '#759de0',
+        borderRadius: 15,
     },
 });
 
