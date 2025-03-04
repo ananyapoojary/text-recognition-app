@@ -5662,6 +5662,11 @@ react-native-gesture-handler@^2.24.0:
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
 
+react-native-image-crop-picker@^0.42.0:
+  version "0.42.0"
+  resolved "https://registry.npmjs.org/react-native-image-crop-picker/-/react-native-image-crop-picker-0.42.0.tgz"
+  integrity sha512-EOEkekPJ7g+CNf92HrWAGM4kcDJyVY02gQJUVH7MSNUOK11SHnurXVM0TnwIt410Y4T+lBkq3rfJEA1qDaDDwA==
+
 react-native-image-picker@^8.2.0:
   version "8.2.0"
   resolved "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-8.2.0.tgz"
@@ -5689,7 +5694,7 @@ react-native-vector-icons@*, react-native-vector-icons@^10.2.0:
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native@*, "react-native@>= 0.61.5", "react-native@>=0.60.0-rc.0 <1.0.x", react-native@0.78.0:
+react-native@*, "react-native@>= 0.61.5", react-native@>=0.40.0, "react-native@>=0.60.0-rc.0 <1.0.x", react-native@0.78.0:
   version "0.78.0"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.78.0.tgz"
   integrity sha512-3PO4tNvCN6BdAKcoY70v1sLfxYCmDR4KS1VTY+kIBKy5Qznp27QNxL7zBQjvS6Jp91gc8N82QbysQrfBlwg9gQ==

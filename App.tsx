@@ -1,29 +1,71 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ToastAndroid } from 'react-native';
+import { View, Text, StyleSheet, ToastAndroid, PermissionsAndroid, Platform } from 'react-native';
 import { Button, Card } from 'react-native-paper';
-import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
-import Clipboard from '@react-native-clipboard/clipboard'; // ✅ Only this import
+import Clipboard from '@react-native-clipboard/clipboard';
 import textRecognition from '@react-native-ml-kit/text-recognition';
+import ImagePicker from 'react-native-image-crop-picker';
+
+const requestCameraPermission = async () => {
+    if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.CAMERA,
+            {
+                title: "Camera Permission",
+                message: "This app needs access to your camera",
+                buttonNeutral: "Ask Me Later",
+                buttonNegative: "Cancel",
+                buttonPositive: "OK"
+            }
+        );
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+    }
+    return true;
+};
 
 const App = () => {
     const [text, setText] = useState<string>('');
     const [image, setImage] = useState<string | null>(null);
 
     const handleImage = async (fromCamera: boolean) => {
-        const options = { mediaType: 'photo' as const };
+        try {
+            if (fromCamera) {
+                const permissionGranted = await requestCameraPermission();
+                if (!permissionGranted) {
+                    ToastAndroid.show('Camera permission denied', ToastAndroid.SHORT);
+                    return;
+                }
 
-        const result = fromCamera ? await launchCamera(options) : await launchImageLibrary(options);
+                const result = await ImagePicker.openCamera({
+                    cropping: true,
+                    freeStyleCropEnabled: true,
+                    mediaType: 'photo',
+                });
 
-        if (result.assets && !result.didCancel) {
-            const uri = result.assets[0]?.uri ?? null;
-            setImage(uri);
+                if (result?.path) {
+                    setImage(result.path);
 
-            if (uri) {
-                const recognitionResult = await textRecognition.recognize(uri);
-                setText(recognitionResult.text || 'No text detected');
+                    // Perform text recognition
+                    const recognitionResult = await textRecognition.recognize(result.path);
+                    setText(recognitionResult.text || 'No text detected');
+                }
             } else {
-                setText('No image selected');
+                const result = await ImagePicker.openPicker({
+                    cropping: true,
+                    freeStyleCropEnabled: true,
+                    mediaType: 'photo',
+                });
+
+                if (result?.path) {
+                    setImage(result.path);
+
+                    // Perform text recognition
+                    const recognitionResult = await textRecognition.recognize(result.path);
+                    setText(recognitionResult.text || 'No text detected');
+                }
             }
+        } catch (error) {
+            console.log('Image selection error:', error);
+            ToastAndroid.show('Image selection canceled', ToastAndroid.SHORT);
         }
     };
 
