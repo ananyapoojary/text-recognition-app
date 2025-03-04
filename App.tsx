@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ToastAndroid } from 'react-native';
 import { Button, Card } from 'react-native-paper';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
+import Clipboard from '@react-native-clipboard/clipboard'; // ✅ Only this import
 import textRecognition from '@react-native-ml-kit/text-recognition';
 
 const App = () => {
@@ -9,9 +10,7 @@ const App = () => {
     const [image, setImage] = useState<string | null>(null);
 
     const handleImage = async (fromCamera: boolean) => {
-        const options = {
-            mediaType: 'photo' as const, // ✅ Use string directly with 'as const' for type safety
-        };
+        const options = { mediaType: 'photo' as const };
 
         const result = fromCamera ? await launchCamera(options) : await launchImageLibrary(options);
 
@@ -25,6 +24,15 @@ const App = () => {
             } else {
                 setText('No image selected');
             }
+        }
+    };
+
+    const copyToClipboard = () => {
+        if (text) {
+            Clipboard.setString(text);
+            ToastAndroid.show('Text copied to clipboard!', ToastAndroid.SHORT);
+        } else {
+            ToastAndroid.show('No text to copy!', ToastAndroid.SHORT);
         }
     };
 
@@ -45,6 +53,9 @@ const App = () => {
                     <Card.Content>
                         <Text style={styles.textTitle}>Recognized Text:</Text>
                         <Text style={styles.text}>{text}</Text>
+                        <Button mode="contained" onPress={copyToClipboard} style={styles.copyButton}>
+                            Copy to Clipboard
+                        </Button>
                     </Card.Content>
                 </Card>
             )}
@@ -90,6 +101,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         marginTop: 5,
         color: '#333',
+    },
+    copyButton: {
+        marginTop: 10,
+        backgroundColor: '#2196F3',
     },
 });
 
