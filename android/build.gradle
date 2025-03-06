@@ -16,6 +16,15 @@ buildscript {
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
     }
+    defaultConfig {
+    minSdkVersion 21    // Supports most Android devices (Lollipop and above)
+    targetSdkVersion 33 // Keep it updated to latest stable version
+}
+ndk {
+    abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+}
+
+
 }
 
 apply plugin: "com.facebook.react.rootproject"
